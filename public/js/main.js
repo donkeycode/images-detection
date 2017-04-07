@@ -48,11 +48,12 @@ function resizeImage(imageContainer) {
       $(imageContainer).find('.js-image').css('height', 'auto');
       $(imageContainer).find('.js-image').css('width', '100%');
 
-      var x = $('.js-image').height() - containerHeight;
+      var x = $(imageContainer).find('.js-image').height() - containerHeight;
       var minTop = 0;
       var maxTop = newPositionTop + zoneHeight;
-      var idealTop = box.BoundingBox.Top * containerHeight;
+      var idealTop = box.BoundingBox.Top * $(imageContainer).find('.js-image').height() -  box.BoundingBox.Top * containerHeight;
 
+      console.log(idealTop, $(imageContainer).find('.js-image').height(), containerHeight);
 
       var aTop = minTop;
 
@@ -63,6 +64,8 @@ function resizeImage(imageContainer) {
       if (idealTop <= maxTop && idealTop >= minTop) {
         aTop = idealTop;
       }
+
+      //aTop = idealTop;
 
       $(imageContainer).find('.js-image').css('top', - aTop + 'px');
     }
