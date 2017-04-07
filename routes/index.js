@@ -41,7 +41,7 @@ router.get('/images-infos/:imageId', function(req, res, next) {
         
         results._metas = {
             tags: awsTags.concat(googleTags).unique(),
-            rotation: aws.faces.OrientationCorrection
+            rotation: results.aws.faces.OrientationCorrection
         };
 
         res.json(results);
