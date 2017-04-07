@@ -1,3 +1,5 @@
+var useMath = true;
+
 function resizeImage(imageContainer) {
     $(imageContainer).find('.js-image').css('height', 'auto');
     $(imageContainer).find('.js-image').css('width', '100%');
@@ -34,10 +36,23 @@ function resizeImage(imageContainer) {
       $(imageContainer).find('.js-image').css('height', containerHeight + 'px');
       $(imageContainer).find('.js-image').css('width', 'auto');
 
-      var idealLeft = (containerWidth / 3 - newPositionLeft);
+      
+
+      if (useMath) {
+        if (box) {
+          var idealLeft = box.BoundingBox.Left * $(imageContainer).find('.js-image').width() -  box.BoundingBox.Left * containerWidth;
+        } else {
+          var idealLeft = 0;
+        }
+        idealLeft = -idealLeft;
+      } else { // Photo rules
+        var idealLeft = (containerWidth / 3 - newPositionLeft);
+      }
+
       var maxLeft = containerWidth - $(imageContainer).find('.js-image').width() ;
       $(imageContainer).find('.js-image').css('left',  Math.min(0, Math.max(idealLeft, maxLeft)) + 'px');
       
+      console.log(idealLeft, $(imageContainer).find('.js-image').width(), containerWidth);
 
     } else {
       var zoom = (containerWidth - imgWidth) / imgWidth;
@@ -53,7 +68,7 @@ function resizeImage(imageContainer) {
       var maxTop = newPositionTop + zoneHeight;
       var idealTop = box.BoundingBox.Top * $(imageContainer).find('.js-image').height() -  box.BoundingBox.Top * containerHeight;
 
-      console.log(idealTop, $(imageContainer).find('.js-image').height(), containerHeight);
+      // console.log(idealTop, $(imageContainer).find('.js-image').height(), containerHeight);
 
       var aTop = minTop;
 
