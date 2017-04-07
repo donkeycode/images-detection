@@ -312,21 +312,44 @@ textarea {
     position:absolute;
     top: 0;
     left: 0;
-   /* top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-*/
 }
 
+
+
+/*css for full width test*/
 .img-after,
 .img-before {
     height: calc(50vh - 20px);
     margin-bottom: 20px;
 }
-
-
 .img-before {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+}
+
+/* css for list test*/
+
+.list-images {
+    font-size: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.list-images li {
+    box-sizing: border-box;
+    display: inline-block;
+    width: 25%;
+    padding: 20px;
+    vertical-align: top;
+    font-size: 14px;
+}
+
+.list-images li .image-cotainer,
+.list-images li .img-before {
+    height: 200px;
+}
+
+.list-images li .img-before {
+    border: 3px solid red;
 }

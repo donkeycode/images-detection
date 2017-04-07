@@ -11,7 +11,8 @@ function resizeImage(imageContainer) {
     var rotate = imageContainer._metasInfos._metas.rotation;
 
     $(imageContainer).find('.js-image').css('transform', 'rotate('+ (rotate || 0) +'deg)');
-
+    $(imageContainer).find('.js-image').css('transform-origin', 'center center');
+    $(imageContainer).find('.js-image').css('transform-style', 'preserve-3d');
     if (box) {
       var zoneWidth = box.BoundingBox.Width * imgWidth;
       var zoneHeight = box.BoundingBox.Height * imgHeight;
@@ -26,8 +27,6 @@ function resizeImage(imageContainer) {
   
     if (containerHeight > imgHeight) {
       var zoom = (containerHeight - imgHeight) / imgHeight;
-      var newZoneWidth = (1 + zoom) * zoneWidth;
-      var newZoneHeight = (1 + zoom) * zoneHeight;
       var newPositionLeft = (1 + zoom) * positionLeft;
       var newPositionTop = (1 + zoom) * positionTop;
 
@@ -43,8 +42,6 @@ function resizeImage(imageContainer) {
     } else {
       var zoom = (containerWidth - imgWidth) / imgWidth;
 
-      var newZoneWidth = (1 + zoom) * zoneWidth;
-      var newZoneHeight = (1 + zoom) * zoneHeight;
       var newPositionLeft = (1 + zoom) * positionLeft;
       var newPositionTop = (1 + zoom) * positionTop - zoneHeight;
 
@@ -54,7 +51,7 @@ function resizeImage(imageContainer) {
       var x = $('.js-image').height() - containerHeight;
       var minTop = 0;
       var maxTop = newPositionTop + zoneHeight;
-      var idealTop = x / 3;
+      var idealTop = box.BoundingBox.Top * containerHeight;
 
 
       var aTop = minTop;
@@ -86,7 +83,7 @@ function imageContainerInit(that) {
       });
     },
     infos: function(callback) {
-      fetch('http://localhost:3000/images-infos/?url='+$('img')[0].src)
+      fetch('http://localhost:3000/images-infos/?url='+$(img)[0].src)
         .then(function(response) {
           response.json().then(function(datas) {
             callback(null, datas);
