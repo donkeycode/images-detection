@@ -6,8 +6,12 @@
     "start": "nodemon -e .ejs,.js,.css ./bin/www"
   },
   "dependencies": {
+    "async": "^2.3.0",
+    "aws-sdk": "^2.39.0",
     "body-parser": "~1.17.1",
+    "config": "^1.25.1",
     "cookie-parser": "~1.4.3",
+    "crypto": "0.0.3",
     "debug": "~2.6.3",
     "ejs": "~2.5.6",
     "express": "~4.15.2",
