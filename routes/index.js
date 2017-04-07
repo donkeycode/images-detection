@@ -20,6 +20,10 @@ router.get('/images-infos', function(req, res, next) {
                 awsReko.rekognize(file, callback);
             },
             google: function(callback) {
+                if (!config.google.enabled) {
+                    return callback(null, null);
+                }
+
                 googleReko.rekognize(file, callback);
             },
 
@@ -30,11 +34,17 @@ router.get('/images-infos', function(req, res, next) {
                 return;
             }
 
+            var tags = [];
             var awsTags = awsReko.extractTags(results.aws);
-            var googleTags = googleReko.extractTags(results.google);
-            
+            tags = awsTags;
+
+            if (config.google.enabled) {
+                var googleTags = googleReko.extractTags(results.google);
+                tags = awsTags.concat(googleTags).unique();
+            }
+
             results._metas = {
-                tags: awsTags.concat(googleTags).unique(),
+                tags: tags,
                 rotation: results.aws.faces.OrientationCorrection ? results.aws.faces.OrientationCorrection.replace(/ROTATE_/, '') : 0
             };
 
