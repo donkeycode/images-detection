@@ -34,7 +34,7 @@
         <script type="text/javascript" src="https://cdn.jsdelivr.net/async/2.3.0/async.min.js"></script>
 
         <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
+        <script src="js/resizer.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
@@ -52,9 +52,16 @@
                 $('.img-after auto-resize-img img').remove();
                 $('.img-after auto-resize-img').attr('src', select.value);
                 $('auto-resize-img').each(function() {
-                    imageContainerInit(this);
+                    window.goodPicture.imageContainerInit(this);
                 });
             }
+
+            $(document).ready(function() {
+                window.goodPicture = new goodPicture({
+                    server: "http://localhost:3000/images-infos/",
+                    resizeTag: 'auto-resize-img'
+                })
+            });
         </script>
 
     </body>

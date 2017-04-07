@@ -10,8 +10,6 @@ var crypto = require('crypto');
 
 router.get('/images-infos', function(req, res, next) {
 
-    console.log(req.query.url);
-
     var file = "/tmp/img-"+crypto.randomBytes(4).readUInt32LE(0);
     downloader(req.query.url, file, function() {
         var awsReko = AWSRekognize(config);
@@ -32,17 +30,8 @@ router.get('/images-infos', function(req, res, next) {
                 return;
             }
 
-            var awsTags = results.aws.labels.Labels.filter((elem) => {
-                return elem.Confidence > 60;
-            }).map((elem) => {
-                return elem.Name.toLowerCase();
-            });
-
-            var googleTags = results.google[0].labelAnnotations.filter((elem) => {
-                return elem.score > 0.6;
-            }).map((elem) => {
-                return elem.description.toLowerCase();
-            });
+            var awsTags = awsReko.extractTags(results.aws);
+            var googleTags = googleReko.extractTags(results.google);
             
             results._metas = {
                 tags: awsTags.concat(googleTags).unique(),
@@ -60,10 +49,11 @@ module.exports = router;
 
 Array.prototype.unique = function() {
     var a = this.concat();
-    for(var i=0; i<a.length; ++i) {
-        for(var j=i+1; j<a.length; ++j) {
-            if(a[i] === a[j])
+    for (var i=0; i<a.length; ++i) {
+        for (var j=i+1; j<a.length; ++j) {
+            if (a[i] === a[j]) {
                 a.splice(j--, 1);
+            }
         }
     }
 

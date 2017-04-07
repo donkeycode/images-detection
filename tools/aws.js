@@ -92,6 +92,13 @@ var AWSRekognize = function(config) {
                     return done(null, infos);
                 });
             });
+        },
+        extractTags: function(results) {
+            return results.labels.Labels.filter((elem) => {
+                return elem.Confidence > 60;
+            }).map((elem) => {
+                return elem.Name.toLowerCase();
+            });
         }
     }
 }

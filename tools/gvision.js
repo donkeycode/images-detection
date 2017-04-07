@@ -29,6 +29,13 @@ var GoogleVision = function(config) {
     return  {
         rekognize: function(imagePath, done) {
             return _rekognize(imagePath, done);
+        },
+        extractTags: function(results) {
+            return results[0].labelAnnotations.filter((elem) => {
+                return elem.score > 0.6;
+            }).map((elem) => {
+                return elem.description.toLowerCase();
+            });
         }
     }
 };
