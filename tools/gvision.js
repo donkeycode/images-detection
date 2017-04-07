@@ -14,7 +14,8 @@ var GoogleVision = function(config) {
                 new vision.Feature('LABEL_DETECTION', 10),
                 new vision.Feature('LOGO_DETECTION', 3),
                 new vision.Feature('LANDMARK_DETECTION', 10),
-                new vision.Feature('TEXT_DETECTION', 30)
+                new vision.Feature('TEXT_DETECTION', 30),
+                new vision.Feature('WEB_DETECTION', 30)
             ]
         });
 

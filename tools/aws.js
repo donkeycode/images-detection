@@ -2,7 +2,7 @@
 const AWS = require('aws-sdk');
 const fs = require('fs');
 var crypto = require('crypto');
-
+var async = require('async');
 
 var AWSRekognize = function(config) {
 
@@ -50,7 +50,25 @@ var AWSRekognize = function(config) {
 
             done(null, data);
         });
-    }
+    };
+
+    var _detectLabels = function(s3Key, done) {
+        var reko = new AWS.Rekognition();
+        reko.detectLabels({
+            Image: {
+                S3Object: {
+                    Bucket: config.aws.s3.bucketName,
+                    Name: s3Key
+                }
+            }
+        }, function(err, data) {
+            if (err) {
+                return done(err, err.stack);
+            }
+
+            done(null, data);
+        });
+    };
 
     return  {
         rekognize: function(imagePath, done) {
@@ -59,7 +77,14 @@ var AWSRekognize = function(config) {
                     return done(err);
                 }
 
-                _detectFaces(s3Key, (err, infos) => {
+                async.parallel({
+                    labels: function(callback) {
+                        return _detectLabels(s3Key, callback);
+                    },
+                    faces: function(callback) {
+                        return _detectFaces(s3Key, callback);
+                    }
+                }, function (err, infos) {
                     if (err) {
                         return done(err, infos);
                     }
