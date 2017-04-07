@@ -1,121 +1,119 @@
-$( document ).ready(function() {
-    console.log( "ready!" );
+function resizeImage(imageContainer) {
+    $(imageContainer).find('.js-image').css('height', 'auto');
+    $(imageContainer).find('.js-image').css('width', '100%');
 
-    function doIt() {
-      $('.js-image').css('height', 'auto');
-      $('.js-image').css('width', '100%');
+    var imgWidth = $(imageContainer).find('.js-image').width();
+    var imgHeight = $(imageContainer).find('.js-image').height();
+    var containerWidth = $(imageContainer).width();
+    var containerHeight = $(imageContainer).height();
 
-      var imgWidth = $('.js-image').width();
-      var imgHeight = $('.js-image').height();
-      var containerWidth = $('.js-image-cotainer').width();
-      var containerHeight = $('.js-image-cotainer').height();
+    var box = imageContainer._metasInfos.aws.faces.FaceDetails[0];
+    var rotate = imageContainer._metasInfos._metas.rotation;
 
-      var zoom2 = (containerWidth - imgWidth) / imgWidth;
+    $(imageContainer).find('.js-image').css('transform', 'rotate('+ (rotate || 0) +'deg)');
 
+    if (box) {
+      var zoneWidth = box.BoundingBox.Width * imgWidth;
+      var zoneHeight = box.BoundingBox.Height * imgHeight;
+      var positionLeft = box.BoundingBox.Left * imgWidth;
+      var positionTop = box.BoundingBox.Top * imgHeight;
+    } else {
+      var zoneWidth = 1 * imgWidth;
+      var zoneHeight = 1 * imgHeight;
+      var positionLeft = 1 * imgWidth;
+      var positionTop = 1 * imgHeight;
+    }
+  
+    if (containerHeight > imgHeight) {
+      var zoom = (containerHeight - imgHeight) / imgHeight;
+      var newZoneWidth = (1 + zoom) * zoneWidth;
+      var newZoneHeight = (1 + zoom) * zoneHeight;
+      var newPositionLeft = (1 + zoom) * positionLeft;
+      var newPositionTop = (1 + zoom) * positionTop;
 
-      var zoneWidth = 0.05 * imgWidth;
-      var zoneHeight = 0.07 * imgHeight;
-      var positionLeft = 0.577 * imgWidth;
-      var positionTop = 0.20 * imgHeight;
+      // On agrandi la largeur
+      $(imageContainer).find('.js-image').css('height', containerHeight + 'px');
+      $(imageContainer).find('.js-image').css('width', 'auto');
 
+      var idealLeft = (containerWidth / 3 - newPositionLeft);
+      var maxLeft = containerWidth - $(imageContainer).find('.js-image').width() ;
+      $(imageContainer).find('.js-image').css('left',  Math.min(0, Math.max(idealLeft, maxLeft)) + 'px');
       
 
-    
+    } else {
+      var zoom = (containerWidth - imgWidth) / imgWidth;
+
+      var newZoneWidth = (1 + zoom) * zoneWidth;
+      var newZoneHeight = (1 + zoom) * zoneHeight;
+      var newPositionLeft = (1 + zoom) * positionLeft;
+      var newPositionTop = (1 + zoom) * positionTop - zoneHeight;
+
+      $(imageContainer).find('.js-image').css('height', 'auto');
+      $(imageContainer).find('.js-image').css('width', '100%');
+
+      var x = $('.js-image').height() - containerHeight;
+      var minTop = 0;
+      var maxTop = newPositionTop + zoneHeight;
+      var idealTop = x / 3;
 
 
-      if (containerHeight > imgHeight) {
-        var zoom = (containerHeight - imgHeight) / imgHeight;
-        var newZoneWidth = (1 + zoom) * zoneWidth;
-        var newZoneHeight = (1 + zoom) * zoneHeight;
-        var newPositionLeft = (1 + zoom) * positionLeft;
-        var newPositionTop = (1 + zoom) * positionTop;
+      var aTop = minTop;
 
-        // On agrandi la largeur
-        $('.js-image').css('height', containerHeight + 'px');
-        $('.js-image').css('width', 'auto');
-
-        var idealLeft = (containerWidth / 3 - newPositionLeft);
-        var maxLeft = containerWidth - $('.js-image').width() ;
-        $('.js-image').css('left',  Math.max(idealLeft, maxLeft) + 'px');
-        
-
-      } else {
-        var zoom = (containerWidth - imgWidth) / imgWidth;
-
-        var newZoneWidth = (1 + zoom) * zoneWidth;
-        var newZoneHeight = (1 + zoom) * zoneHeight;
-        var newPositionLeft = (1 + zoom) * positionLeft;
-        var newPositionTop = (1 + zoom) * positionTop - zoneHeight;
-        console.log(positionTop);
-
-        $('.js-image').css('height', 'auto');
-        $('.js-image').css('width', '100%');
-
-        // var idealTop = -(containerHeight / 3 + newPositionTop - zoneHeight);
-        var x = $('.js-image').height() - containerHeight;
-        var minTop = 0;
-        var maxTop = newPositionTop + zoneHeight;
-        var idealTop = x / 3;
-
-
-        var aTop = minTop;
-
-        if (idealTop > maxTop) {
-          aTop = maxTop;
-        }
-
-        if (idealTop <= maxTop && idealTop >= minTop) {
-          aTop = idealTop;
-        }
-
-
-        console.log({ min: minTop, maxTop: maxTop, idealTop: idealTop, aTop: aTop});
-
-        //aTop = newPositionTop + zoneHeight;
-
-        $('.js-image').css('top', - aTop + 'px');
-
+      if (idealTop > maxTop) {
+        aTop = maxTop;
       }
 
-      $('.js-zone').css({
-        'width': newZoneWidth + 'px', 
-        'height': newZoneHeight + 'px',
-        'top': newPositionTop + 'px',
-        'left': newPositionLeft + 'px'
+      if (idealTop <= maxTop && idealTop >= minTop) {
+        aTop = idealTop;
+      }
+
+      $(imageContainer).find('.js-image').css('top', - aTop + 'px');
+    }
+  }
+
+function imageContainerInit(that) {
+  var img = $('<img />')
+      .attr('src', $(that).attr('src'))
+      .addClass('js-image');
+
+  $(that).addClass('image-cotainer js-image-cotainer');
+  $(that).append(img);
+
+  async.parallel({
+    load: function(callback) {
+      $(img).one("load", function() {
+        callback(null, null);
       });
+    },
+    infos: function(callback) {
+      fetch('http://localhost:3000/images-infos/?url='+$('img')[0].src)
+        .then(function(response) {
+          response.json().then(function(datas) {
+            callback(null, datas);
+          })
+        });
+    }
+  }, function (err, results) {
+    if (err) {
+      console.error(err);
     }
 
-    doIt();
+    that._metasInfos = results.infos;
 
-    window.addEventListener('resize', doIt);
+    resizeImage(that);            
+  });
 
-   
+}
 
-    //zoom img width ()
-    //var newImgWidth = (zoom + 1)* imgWidth;
+$(document).ready(function() {
+  $('auto-resize-img').each(function() {
+    imageContainerInit(this);
+  });
 
-    // console.log( 'imgWidth = ' +  imgWidth);
-    // console.log( 'imgHeight = ' +  imgHeight);
-    // console.log( 'containerWidth = ' +  containerWidth);
-    // console.log( 'containerHeight = ' +  containerHeight);
-    // console.log( 'zoom = ' +  zoom);
-    // console.log( 'newImgWidth = ' +  newImgWidth);
-
-    //$('.js-image').css('width', newImgWidth + 'px');
-
-    
-
+  window.addEventListener('resize', function() {
+    $('auto-resize-img').each(function() {
+      resizeImage(this);
+    });
+  });
 });
 
-
-// $( window ).resize(function() {
-//     var imgWidth = $('.js-image').width();
-//     var imgHeight = $('.js-image').height();
-
-//     var containerWidth = $('.js-image-cotainer').width();
-//     var containerHeight = $('.js-image-cotainer').height();
-//     var zoom = (containerHeight - imgHeight) / imgHeight;
-
-//     console.log( 'zoom = ' +  zoom);
-    
-// });

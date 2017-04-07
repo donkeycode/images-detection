@@ -292,12 +292,13 @@ textarea {
 
 .image-cotainer {
     border: 3px solid green;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 50vh;
     margin: 0 auto;
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
+    display: block;
 }
 
 
@@ -315,4 +316,17 @@ textarea {
     left: 50%;
     transform: translate(-50%, -50%);
 */
+}
+
+.img-after,
+.img-before {
+    height: calc(50vh - 20px);
+    margin-bottom: 20px;
+}
+
+
+.img-before {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
