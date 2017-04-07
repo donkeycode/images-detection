@@ -114,23 +114,25 @@ var goodPicture = function goodPicture(config) {
             img.style.height = "auto";
             img.style.width = "100%";
 
-            var rect = img.getBoundingClientRect();
+            setTimeout(function() {
+                var rect = img.getBoundingClientRect();
 
-            var minTop = 0;
-            var maxTop = newPositionTop + zoneHeight;
-            var idealTop = box.BoundingBox.Top * rect.height -  box.BoundingBox.Top * containerHeight;
+                var minTop = 0;
+                var maxTop = newPositionTop + zoneHeight;
+                var idealTop = box.BoundingBox.Top * (rotate != 0 ? rect.width :  rect.height) -  box.BoundingBox.Top * containerHeight;
 
-            var aTop = minTop;
+                var aTop = minTop;
 
-            if (idealTop > maxTop) {
-                aTop = maxTop;
-            }
+                if (idealTop > maxTop) {
+                    aTop = maxTop;
+                }
 
-            if (idealTop <= maxTop && idealTop >= minTop) {
-                aTop = idealTop;
-            }
+                if (idealTop <= maxTop && idealTop >= minTop) {
+                    aTop = idealTop;
+                }
 
-            img.style.top = - aTop + 'px';
+                img.style.top = - aTop + 'px';
+            });
         }
     }
 
