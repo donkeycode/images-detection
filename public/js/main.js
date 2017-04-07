@@ -99,6 +99,9 @@ function imageContainerInit(that) {
     }
 
     that._metasInfos = results.infos;
+    $(img).attr('alt', that._metasInfos._metas.tags.join(', '));
+    $(img).attr('title', that._metasInfos._metas.tags.join(', '));
+
 
     resizeImage(that);            
   });
