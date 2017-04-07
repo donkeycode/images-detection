@@ -74,7 +74,7 @@ function resizeImage(imageContainer) {
 function imageContainerInit(that) {
   var img = $('<img />')
       .attr('src', $(that).attr('src'))
-      .addClass('js-image');
+      .addClass('js-image is-loading');
 
   $(that).addClass('image-cotainer js-image-cotainer');
   $(that).append(img);
@@ -103,7 +103,11 @@ function imageContainerInit(that) {
     $(img).attr('title', that._metasInfos._metas.tags.join(', '));
 
 
-    resizeImage(that);            
+    resizeImage(that); 
+
+    setTimeout(function() {
+      $(img).removeClass('is-loading');
+    })           
   });
 
 }
