@@ -5,7 +5,7 @@ This is a sample of how working with AWS or Google Image detection
 
 ## Setup
 
-create you `config/default.json`
+create your `config/default.json`
 
 Run 
 
