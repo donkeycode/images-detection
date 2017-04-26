@@ -6,49 +6,57 @@ var async = require('async');
 var AWSRekognize = require('../tools/aws');
 var GoogleVision = require('../tools/gvision');
 var downloader = require('../tools/downloader');
+var cache = require('../tools/cache');
+
 var crypto = require('crypto');
 
 router.get('/images-infos', function(req, res, next) {
+    cache.get(req.query.url, function (cacheObj) {
+        if (cacheObj) {
+            return res.json(cacheObj.datas);
+        }
 
-    var file = "/tmp/img-"+crypto.randomBytes(4).readUInt32LE(0);
-    downloader(req.query.url, file, function() {
-        var awsReko = AWSRekognize(config);
-        var googleReko = GoogleVision(config);
-        
-        async.parallel({
-            aws: function(callback) {
-                awsReko.rekognize(file, callback);
-            },
-            google: function(callback) {
-                if (!config.google.enabled) {
-                    return callback(null, null);
+        var file = "/tmp/img-"+crypto.randomBytes(4).readUInt32LE(0);
+        downloader(req.query.url, file, function() {
+            var awsReko = AWSRekognize(config);
+            var googleReko = GoogleVision(config);
+            
+            async.parallel({
+                aws: function(callback) {
+                    awsReko.rekognize(file, callback);
+                },
+                google: function(callback) {
+                    if (!config.google.enabled) {
+                        return callback(null, null);
+                    }
+
+                    googleReko.rekognize(file, callback);
+                },
+
+            }, function(err, results) {
+                if (err) {
+                    res.status(400);
+                    res.json(err);
+                    return;
                 }
 
-                googleReko.rekognize(file, callback);
-            },
+                var tags = [];
+                var awsTags = awsReko.extractTags(results.aws);
+                tags = awsTags;
 
-        }, function(err, results) {
-            if (err) {
-                res.status(400);
-                res.json(err);
-                return;
-            }
+                if (config.google.enabled) {
+                    var googleTags = googleReko.extractTags(results.google);
+                    tags = awsTags.concat(googleTags).unique();
+                }
 
-            var tags = [];
-            var awsTags = awsReko.extractTags(results.aws);
-            tags = awsTags;
+                results._metas = {
+                    tags: tags,
+                    rotation: results.aws.faces.OrientationCorrection ? results.aws.faces.OrientationCorrection.replace(/ROTATE_/, '') : 0
+                };
 
-            if (config.google.enabled) {
-                var googleTags = googleReko.extractTags(results.google);
-                tags = awsTags.concat(googleTags).unique();
-            }
-
-            results._metas = {
-                tags: tags,
-                rotation: results.aws.faces.OrientationCorrection ? results.aws.faces.OrientationCorrection.replace(/ROTATE_/, '') : 0
-            };
-
-            res.json(results);
+                cache.set(req.query.url, results);
+                res.json(results);
+            });
         });
     });
 })
