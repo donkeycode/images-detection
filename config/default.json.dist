@@ -1,0 +1,19 @@
+{
+    "mongodb": "mongodb://localhost/images",
+    "aws": {
+        "credentials": {
+            "region": "eu-west-1",
+            "accessKeyId": "YOU",
+            "secretAccessKey": "YOU"
+        },
+        "s3": {
+            "bucketName": "images-reco"
+        }
+    },
+    "google": {
+        "enabled": true,
+        "credentials": {
+            "api_key": "YOU"
+        }
+    }
+}
