@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon -e .ejs,.js,.css ./bin/www"
+    "start": "nodemon -e .ejs,.js,.css ./bin/www",
+    "prepublish": "npm run snyk-protect",
+    "snyk-protect": "snyk-protect"
   },
   "dependencies": {
     "async": "^2.3.0",
@@ -20,9 +22,11 @@
     "morgan": "~1.8.1",
     "node-cloud-vision-api": "^0.2.0",
     "request": "^2.81.0",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "~2.4.2",
+    "@snyk/protect": "latest"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
-  }
+  },
+  "snyk": true
 }

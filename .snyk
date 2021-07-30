@@ -1,0 +1,33 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.21.5
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:hoek:20180212':
+    - node-cloud-vision-api > googleapis > request > hawk > hoek:
+        patched: '2021-07-30T20:22:02.136Z'
+    - node-cloud-vision-api > googleapis > request > hawk > boom > hoek:
+        patched: '2021-07-30T20:22:02.136Z'
+    - node-cloud-vision-api > googleapis > request > hawk > sntp > hoek:
+        patched: '2021-07-30T20:22:02.136Z'
+    - node-cloud-vision-api > googleapis > google-auth-library > request > hawk > hoek:
+        patched: '2021-07-30T20:22:02.136Z'
+    - node-cloud-vision-api > googleapis > request > hawk > cryptiles > boom > hoek:
+        patched: '2021-07-30T20:22:02.136Z'
+    - node-cloud-vision-api > googleapis > google-auth-library > request > hawk > boom > hoek:
+        patched: '2021-07-30T20:22:02.136Z'
+    - node-cloud-vision-api > googleapis > google-auth-library > request > hawk > sntp > hoek:
+        patched: '2021-07-30T20:22:02.136Z'
+    - node-cloud-vision-api > googleapis > google-auth-library > request > hawk > cryptiles > boom > hoek:
+        patched: '2021-07-30T20:22:02.136Z'
+  'npm:request:20160119':
+    - node-cloud-vision-api > googleapis > request:
+        patched: '2021-07-30T20:22:02.136Z'
+  'npm:tough-cookie:20170905':
+    - node-cloud-vision-api > googleapis > request > tough-cookie:
+        patched: '2021-07-30T20:22:02.136Z'
+  'npm:tunnel-agent:20170305':
+    - node-cloud-vision-api > googleapis > request > tunnel-agent:
+        patched: '2021-07-30T20:22:02.136Z'
+    - node-cloud-vision-api > googleapis > google-auth-library > request > tunnel-agent:
+        patched: '2021-07-30T20:22:02.136Z'
