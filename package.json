@@ -16,7 +16,7 @@
     "debug": "~2.6.3",
     "ejs": "~2.5.6",
     "express": "~4.15.2",
-    "mongoose": "^4.9.6",
+    "mongoose": "^6.0.4",
     "morgan": "~1.8.1",
     "node-cloud-vision-api": "^0.2.0",
     "request": "^2.81.0",
